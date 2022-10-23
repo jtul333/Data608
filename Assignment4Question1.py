@@ -4,7 +4,6 @@ Created on Sun Oct 23 12:08:13 2022
 
 @author: JAV9028
 """
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -23,85 +22,121 @@ import dash_html_components as html
 
 url = 'https://data.cityofnewyork.us/resource/nwxe-4ae8.json'
 trees = pd.read_json(url)
+trees_q1 = trees[['spc_common','health','boroname']]
+trees_q1['spc_common'].fillna('Unknown',inplace = True)
+trees_q1.dropna(inplace = True)
 
-#Question2
-    
-    
-trees_q2 = trees[['spc_common','status','boroname']]
-trees_q2['spc_common'].fillna('Unknown',inplace = True)
+#identify different health conditions
+statuses = list(set(trees_q1['health']))
+print(statuses)
 
-#create columns that specify tree status
-for statusq2 in set(trees_q2['status']):
-    trees_q2[statusq2] = np.where(trees_q2['status']==statusq2,1,0)
+colors = ['rgb(69,132,191)','rgb(206,206,206)','rgba(232,65,28,0.8)']
+
+
+#create columns that specify tree health conditions
+for status in set(trees_q1['health']):
+    trees_q1[status] = np.where(trees_q1['health']==status,1,0)
     
-trees_q2 = pd.DataFrame(trees_q2.groupby(['boroname','spc_common']).sum())
-trees_q2.head()
+trees_q1 = pd.DataFrame(trees_q1.groupby(['boroname','spc_common']).sum())
+trees_q1.head()
 
 #find out boroughs
-boroughsq2 = list(set(trees['boroname']))
+boroughs = list(set(trees['boroname']))
 
-trace_list_q2 =[]
-
-#create plot titles
-borough_listq2 = list(map(lambda x: str(x), boroughsq2))
-
-trees_q2 = trees[['spc_common','health','boroname','steward']]
-
-trees_q2['spc_common'].fillna('Unknown',inplace = True)
-trees_q2.dropna(inplace = True)
-trees_q2[['steward','health']] = trees_q2[['steward','health']].apply(lambda x : pd.factorize(x)[0])
-trees_q2_cor = pd.DataFrame(trees_q2.groupby(['boroname','spc_common']).corr())
-fig_q2 = tools.make_subplots(rows=1, cols=len(boroughsq2), subplot_titles=tuple(borough_listq2))
+trees_q1['total'] = trees_q1.sum(axis=1)
+for column in list(trees_q1.columns):
+    trees_q1[column] = (trees_q1[column]/trees_q1['total'])*100
+trees_q1.head()
 
 
+#create list to store data for each borough
+trace_list=[]
 
-boroughsq2 = list(set(trees_q2['boroname']))
-plantsq2 = list(set(trees_q2['spc_common']))
 
-for boroughq2 in boroughsq2:
-    traceq2 = go.Bar(
-            x = list(trees_q2.loc[boroughq2].index),
-            y = list(trees_q2_cor.loc[boroughq2]['steward'][::2])
+borough_list = list(map(lambda x: str(x), boroughs))
+
+#select number of columns
+cols=len(boroughs)
+#calculate number of rows
+rows=1
+fig = tools.make_subplots(rows=rows, cols=cols, subplot_titles=tuple(borough_list))
+
+#iterate through boroughs
+for borough in boroughs:
+        for i in range(0,len(statuses)):
+            trace = go.Bar(
+            x = list(trees_q1.loc[borough].index),
+            y = list(trees_q1.loc[borough][statuses[i]]),
+            name = statuses[i],
+            marker=dict(color=colors[i])
             )
-    trace_list_q2 += [traceq2]
-
-for i in range(len(boroughsq2)):
-    fig_q2.append_trace(trace_list_q2[i], 1, i+1) 
+            trace_list += [trace]
 
 
+
+row_i = []
+col_j = []
+for i in range(1,rows+1):
+    for j in range (1,cols+1):
+        for n in range (1,4):
+            row_i.append(i)
+            col_j.append(j)
+
+for i in range(0,len(trace_list)):        
+     fig.append_trace(trace_list[i], row_i[i],col_j[i]) 
+ 
         
-fig_q2['layout'].update(showlegend=False,height=500, width=1400, title='Proportion of Trees in Good, Fair and Poor Conditions')
-
-
+fig['layout'].update(showlegend=False,height=1000, width=900, title='Proportion of Trees in Good, Fair and Poor Conditions', barmode='stack')
 
 
 app = dash.Dash()
 
 colors = {
     'background': '#ffffff',
-    'text': '#111111'
+    'text': 'black'
 }
-
-
 
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     html.H1(
-        children='Question #2',
+        children='Question #1',
         style={
             'textAlign': 'center',
             'color': colors['text']
         }
     ),
-    html.Div(children='Correlation between stewardsand health of trees', style={
+    html.Div(children='Proportion of trees in Good, Fair and Poor conditions', style={
         'textAlign': 'center',
         'color': colors['text']
     }),
-    
+
+       
     html.Div([
-        dcc.Graph(figure=fig_q2, id='my-figure')
-])
+        dcc.Graph(figure=fig, id='my-figure')])
     ])
 
 
+
 if __name__ == '__main__':
-   app.run_server(debug=True) 
+    app.run_server(debug=True) 
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

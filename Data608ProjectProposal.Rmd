@@ -1,0 +1,52 @@
+---
+title: "Data 608 Project proposal"
+author: "Jaya Veluri"
+date: "10/23/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1 Project Proposal
+
+### 1.1 Objective
+
+Covid-19 has been widely affect USA and also the whole world in the past year. In March 2020, World Health Organization (WHO) declared it a pandemic around the world in over 110 countries. It is caused by severe respiratory syndrome Coronavirus 2. From 2021 lot of  pcr testing to diagnose covid and also vaccination is also happening at a good rate in USA and worldwide. In New Yok State lot of testing is going on and new cases and hospitalization happening in 2022 due to new covid 19 variants.  In Newyork state will create a visualization dashboard to show the statistics on "New York State Statewide COVID-19 Testing by County" and "New York Forward COVID-19 Daily Hospitalization Summary by Region".
+
+
+### 1.2 Data
+
+A) Data Source for "New York State Statewide COVID-19 Testing by County" is obtained from https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing/xdss-u53e/data. Data can be accessed using SODA API or the .json https://health.data.ny.gov/resource/xdss-u53e.json or cam be exported to "New_York_State_Statewide_COVID-19_Testing.csv" for offline use.
+
+Data Fields:
+Test Date
+County
+New Positives
+Cumulative Number of Positives
+Total Number of Tests Performed
+Cumulative Number of Tests Performed
+Test % Positive
+Geography
+
+B) Data Source for "New York Forward COVID-19 Daily Hospitalization Summary by Region" is obtained from https://health.data.ny.gov/Health/New-York-Forward-COVID-19-Daily-Hospitalization-Su/qutr-irdf/data. Data can be accessed using SODA API or the .json https://health.data.ny.gov/resource/qutr-irdf.json or cam be exported to "New_York_Forward_COVID-19_Daily_Hospitalization_Summary_by_Region.csv" for offline use.
+
+Data Fields:
+
+As of Date
+Region
+Total Patients Hospitalized
+Total Patients in ICU
+
+### 1.3 Project Plan 
+A) I will create a visualization dashboard to show the statistics on Total Number of Tests Performed(“Covid-19”) and new positives in different counties for NewYok  in 2022
+
+B) I will create a visualization dashboard to show the statistics on Total Patients Hospitalized and Total Patients in ICU for each Region in NY State in 2022.
+
+We will see if we can find any correlation between testing data and hospitalization in NY state.
+
+
+I am planning to use Dash/Flask with python IDE.
+
+

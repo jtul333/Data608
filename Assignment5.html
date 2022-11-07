@@ -58,7 +58,7 @@ function generate_csvtable(data,columns) {
 
 function import_csvdata(){
     
-  var github = 'https://raw.githubusercontent.com/jtul333/Data608/main/presidents.csv'
+  var github = 'https://raw.githubusercontent.com/jtul333/Data608/main/data/presidents.csv'
   var t = d3.csv(github,function (data) {
     var columns = ['Name','Height','Weight'];
       generate_csvtable(data,columns); 
@@ -82,7 +82,7 @@ function get_hw(data,columns) {
 
 function printhw(){
   var pres = document.getElementById('txtprs').value
-  var github = 'https://raw.githubusercontent.com/jtul333/Data608/main/presidents.csv'
+  var github = 'https://raw.githubusercontent.com/jtul333/Data608/main/data/presidents.csv'
   var t = d3.csv(github,function (data) {
     var columns = ['Name','Height','Weight'];
     var subset = data.filter( function(d) { return d.Name.toString().toLowerCase().indexOf( pres ) !== -1 } ); 

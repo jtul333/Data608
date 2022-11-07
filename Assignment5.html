@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Data608 Assignment 5</h1>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+//var str_rev = prompt("Please enter a phrase", "never odd or even");
+function txt_reverse()
+{
+var str_rev = document.getElementById("txtsreverse").value;
+var str_list = str_rev.split("");
+var rev_list = str_list.reverse();
+var rev_str = rev_list.join("");
+document.getElementById("lrev").innerHTML = rev_str;
+
+//document.write(rev_str);
+}
+
+//var num1 = prompt("Please enter a number", "2");
+//var num1 = parseInt(num1);
+
+function generate_table() {
+  var num1 = parseInt(document.getElementById("txttable").value);
+  //alert(num1);
+  var mult = Array.from(new Array(20), (x,i) => i + 1);
+  var vals = mult.map(x => x * num1);
+  var elem = "";  
+  for (var i = 0; i < vals.length; i++) {  
+    if (i % 4 == 0) {
+      elem += "<tr><td>" + vals[i] + "</td>";
+    } else if (i + 1 % 4 == 0) {
+      elem += "<td>" + vals[i] + "</td></tr>";
+    } else {
+      elem += "<td>" + vals[i] + "</td>";
+    }  
+  }
+  var table = '<table>' + elem + '</table>';  
+  return(table)
+};
+function generate_divtable(){
+  var t = document.getElementById("dtable");
+  t.innerHTML = generate_table();
+}
+function generate_csvtable(data,columns) {
+    
+  var table = d3.select('#target_csv1').append('table')
+  var thead = table.append('thead')
+  var tbody = table.append('tbody')
+  thead.append('tr').selectAll('th').data(columns).enter().append('th').text(function (d) { return d })
+  var rows = tbody.selectAll('tr').data(data).enter().append('tr')
+  var cells = rows.selectAll('td').data(function(row) {
+    return columns.map(function (column) {
+      return { column: column, value: row[column] } })
+  }).enter().append('td').text(function (d) { return d.value })
+  return table;
+}
+
+function import_csvdata(){
+    
+  var github = "https://raw.githubusercontent.com/charleyferrari/CUNY_DATA_608/master/module5/data/presidents.csv"
+  var t = d3.csv(github,function (data) {
+    var columns = ['Name','Height','Weight'];
+      generate_csvtable(data,columns); 
+    });
+//alert(data);
+}
+
+function get_hw(data,columns) {
+  //alert(data);
+  var table = d3.select('#target_csv2').append('table')
+  var thead = table.append('thead')
+  var tbody = table.append('tbody')
+  thead.append('tr').selectAll('th').data(columns).enter().append('th').text(function (d) { return d })
+  var rows = tbody.selectAll('tr').data(data).enter().append('tr')
+  var cells = rows.selectAll('td').data(function(row) {
+    return columns.map(function (column) {
+      return { column: column, value: row[column] } })
+  }).enter().append('td').text(function (d) { return d.value })
+  return table;
+}
+
+function printhw(){
+  var pres = document.getElementById('txtprs').value
+  var github = 'https://raw.githubusercontent.com/charleyferrari/CUNY_DATA_608/master/module5/data/presidents.csv'
+  var t = d3.csv(github,function (data) {
+    var columns = ['Name','Height','Weight'];
+    var subset = data.filter( function(d) { return d.Name.toString().toLowerCase().indexOf( pres ) !== -1 } ); 
+    alert(subset);
+    get_hw(subset,columns) });
+}
+</script>
+<form>
+<p>String Reversal Function:</p>
+<p>Please enter a phrase, never odd or even</p>
+<input type = "text" name="txtsreverse" id="txtsreverse"  />
+<input type="button" value="Reverse Phrase" onclick="txt_reverse()">
+<p>Output:</p>
+<label id = "lrev"></label></p>
+<p>Multiplication Table:</p>
+<p>"Please enter a number"</p>
+<input type = "text" name="txttable" id="txttable"  />
+<input type="button" value="Generate a table" onclick="generate_divtable()">
+<p>Output:</p>
+</form>
+<div id = "dtable"></div>
+<form>
+<p>Part1:</p>
+<p>"Write a function to load the presidents.csv data and display the data as an html table (you may use a .csv parser from any available library, though I encourage you to try the D3 one)."</p>
+<input type="button" value="Import csv/Generate Table" onclick="import_csvdata()">
+</form>
+<div id="target_csv1"></div>
+<form>
+<p>Part2:</p>
+<p>"Now that you have the presidents data loaded, write a function that will return that president’s height & weight when you type it in. This can be typed into either an input box or an alert box, and then print the result in a box or on the webpage."</p>
+<p> please type in president name in lowercase</p>
+<input type = "text" name="txtprs" id="txtprs"  />
+<input type="button" value="Height/Weight" onclick="printhw()">
+</form>
+<div id="target_csv2"></div>
+</body>
+</html>
